@@ -31,10 +31,10 @@
       </button>
       <div v-if="isGroupOpen(group.id)" class="text-center">
         <div v-for="task in tasks[group.id]" :key="task.id">
-          <SingleTaskBasic :Task="task" />
+          <SingleTaskBasic :Task="task" @taskDeleted="toggleTaskList" />
         </div>
       </div>
-      <div class="flex justify-between">
+      <div class="flex justify-around">
         <button
           @click="navigateToUrl(group.id)"
           class="text-center text-gray-400 hover:text-gray-200 mt-2"
@@ -43,6 +43,7 @@
         </button>
         <button
           class="flex gap-1 text-center text-red-400 hover:text-gray-200 mt-2 hover:fill-white fill-red-400"
+          @click="handleDeleteTaskGroup(group.id)"
         >
           <Delete class="scale-75" />
           Delete
@@ -57,7 +58,7 @@ import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import type { ITask } from "~/interfaces/ITask";
 import type { ITaskGroup } from "~/interfaces/ITaskGroup";
-import { getAllGroups, getTaskOfGroup } from "~/server/fastApi/api-service";
+import { getAllGroups, getTaskOfGroup, deleteTaskGroup } from "~/server/fastApi/api-service";
 import { CloseMenu, ArrowDown, ArrowUp, Delete } from "~/assets/icons";
 import SingleTaskBasic from "../Tasks/SingleTaskBasic.vue";
 
@@ -73,6 +74,7 @@ const props = defineProps({
     default: [],
   },
 });
+const deleteOneTaskGroup = ref(false);
 
 const openGroups = ref<number[]>([]);
 
@@ -80,10 +82,11 @@ const listTaskGroup = ref<ITaskGroup[]>([]);
 const tasks = ref<ITask[]>([]);
 
 watchEffect(async () => {
-  if (props.addNewTaskGroup) {
+  if (props.addNewTaskGroup || deleteOneTaskGroup.value) {
     try {
       const data = (await getAllGroups()) as unknown as ITaskGroup[];
       listTaskGroup.value = data;
+      deleteOneTaskGroup.value = false
     } catch (error) {
       console.error("Error fetching task groups:", error);
     }
@@ -93,7 +96,8 @@ watchEffect(async () => {
       try {
         const data = (await getAllGroups()) as unknown as ITaskGroup[];
         listTaskGroup.value = data;
-      } catch (error) {
+        deleteOneTaskGroup.value = false
+    } catch (error) {
         console.error("Error fetching task groups:", error);
       }
     });
@@ -122,6 +126,17 @@ const isGroupOpen = (groupId: number) => openGroups.value.includes(groupId);
 const closeAllTasks = () => {
   openGroups.value = [];
   tasks.value = {};
+};
+
+const handleDeleteTaskGroup = (groupId: number) => {
+  deleteTaskGroup(groupId)
+    .then(() => {
+      deleteOneTaskGroup.value = !deleteOneTaskGroup.value
+    })
+    .catch((err) => {
+      error.value = err.response.data.message;
+      console.error("Error delete task:", err);
+    });
 };
 </script>
 

@@ -4,7 +4,6 @@
     <p>This is my Task List Manager</p>
     <p>You can create your Group Tasks</p>
     <!-- ADD TASK GROUP -->
-    <!-- <div v-if="!formVisible" class="flex gap-2">Create Task Group</div> -->
     <button
       v-if="!formVisible"
       @click="toggleForm"
