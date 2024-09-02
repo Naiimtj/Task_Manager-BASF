@@ -9,8 +9,8 @@
       <CloseMenu class="fill-gray-400 hover:fill-white" />
     </button>
   </div>
-
-  <div class="grid grid-cols-4">
+  <!-- List Task Groups -->
+  <div class="grid grid-cols-4 overflow-y-auto max-h-[200px]">
     <div
       v-for="group in listTaskGroup"
       @click.prevent="toggleTaskList(group.id)"
@@ -29,7 +29,11 @@
           <ArrowDown class="fill-white" />
         </div>
       </button>
-      <div v-if="isGroupOpen(group.id)" class="text-center">
+      <!-- List Tasks -->
+      <div
+        v-if="isGroupOpen(group.id)"
+        class="text-center overflow-y-auto max-h-[120px]"
+      >
         <div v-for="task in tasks[group.id]" :key="task.id">
           <SingleTaskBasic :Task="task" @taskDeleted="toggleTaskList" />
         </div>
@@ -58,7 +62,11 @@ import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import type { ITask } from "~/interfaces/ITask";
 import type { ITaskGroup } from "~/interfaces/ITaskGroup";
-import { getAllGroups, getTaskOfGroup, deleteTaskGroup } from "~/server/fastApi/api-service";
+import {
+  getAllGroups,
+  getTaskOfGroup,
+  deleteTaskGroup,
+} from "~/server/fastApi/api-service";
 import { CloseMenu, ArrowDown, ArrowUp, Delete } from "~/assets/icons";
 import SingleTaskBasic from "../Tasks/SingleTaskBasic.vue";
 
@@ -86,7 +94,7 @@ watchEffect(async () => {
     try {
       const data = (await getAllGroups()) as unknown as ITaskGroup[];
       listTaskGroup.value = data;
-      deleteOneTaskGroup.value = false
+      deleteOneTaskGroup.value = false;
     } catch (error) {
       console.error("Error fetching task groups:", error);
     }
@@ -96,8 +104,8 @@ watchEffect(async () => {
       try {
         const data = (await getAllGroups()) as unknown as ITaskGroup[];
         listTaskGroup.value = data;
-        deleteOneTaskGroup.value = false
-    } catch (error) {
+        deleteOneTaskGroup.value = false;
+      } catch (error) {
         console.error("Error fetching task groups:", error);
       }
     });
@@ -131,7 +139,7 @@ const closeAllTasks = () => {
 const handleDeleteTaskGroup = (groupId: number) => {
   deleteTaskGroup(groupId)
     .then(() => {
-      deleteOneTaskGroup.value = !deleteOneTaskGroup.value
+      deleteOneTaskGroup.value = !deleteOneTaskGroup.value;
     })
     .catch((err) => {
       error.value = err.response.data.message;

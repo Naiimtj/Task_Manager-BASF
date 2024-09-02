@@ -1,11 +1,11 @@
 <template>
-  <h2 class="text-lg">Labels:</h2>
+  <h3 class="text-lg">Labels:</h3>
   <!-- List of labels -->
   <div class="flex flex-wrap">
     <div
       v-for="(label, index) in labels"
       :key="index"
-      class="bg-gray-200 text-gray-800 rounded-lg mr-2 px-2 flex items-center"
+      class="bg-gray-200 text-gray-800 rounded-lg mr-2 mt-2 px-2 flex items-center"
     >
       <span class="mr-1">{{ label }}</span>
       <button

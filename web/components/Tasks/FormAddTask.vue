@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createTask } from "../../server/fastApi/api-service";
+import { createTask, editTask } from "../../server/fastApi/api-service";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AddLabels from "./AddLabels";
@@ -86,7 +86,7 @@ let prioritys = ref([
 const router = useRouter();
 const route = useRoute();
 
-const labels = ref<Array>(isEdit ? task.labels :[]);
+const labels = ref<Array>(isEdit ? task.labels : []);
 const taskTitle = ref<string>(isEdit ? task.title : "");
 const taskDescription = ref<string>(isEdit ? task.description : "");
 const taskPriority = ref<string>(isEdit ? task.priority : "Low");
@@ -99,26 +99,49 @@ const taskId = route.params.taskId;
 
 const error = ref(null);
 
-const submitForm = () => {  
-  createTask({
-    title: taskTitle.value,
-    description: taskDescription.value,
-    priority: taskPriority.value,
-    labels: labels.value,
-    group_id: Number(groupId),
-  })
-    .then((response) => {
-      if (response) {
-        // Reset form and close
-        taskTitle.value = "";
-        taskDescription.value = "";
-        taskPriority.value = "Low";
-        (labels.value = []), closeModal();
-      }
+const submitForm = () => {
+  if (isEdit) {
+    editTask(taskId, {
+      title: taskTitle.value,
+      description: taskDescription.value,
+      priority: taskPriority.value,
+      labels: labels.value,
+      group_id: Number(groupId),
     })
-    .catch((err) => {
-      error.value = err.response.data.message;
-    });
+      .then((response) => {
+        if (response) {
+          // Reset form and close
+          taskTitle.value = "";
+          taskDescription.value = "";
+          taskPriority.value = "Low";
+          (labels.value = []), closeModal();
+        }
+      })
+      .catch((err) => {
+        error.value = err.response.data.message;
+        console.error("Error updating task:", err);
+      });
+  } else {
+    createTask({
+      title: taskTitle.value,
+      description: taskDescription.value,
+      priority: taskPriority.value,
+      labels: labels.value,
+      group_id: Number(groupId),
+    })
+      .then((response) => {
+        if (response) {
+          // Reset form and close
+          taskTitle.value = "";
+          taskDescription.value = "";
+          taskPriority.value = "Low";
+          (labels.value = []), closeModal();
+        }
+      })
+      .catch((err) => {
+        error.value = err.response.data.message;
+      });
+  }
 };
 </script>
 

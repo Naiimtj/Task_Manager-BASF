@@ -110,6 +110,15 @@ export async function getTask(id) {
     throw error;
   }
 }
+export async function searchTaskTitle(query) {
+  try {
+    const response = await service.get(`/tasks/search?title=${query}`);
+    return response;
+  } catch (error) {
+    console.error("Error in Search Tasks:", error);
+    return [];
+  }
+}
 // * PUT
 export async function editTask(id, body) {
   try {
