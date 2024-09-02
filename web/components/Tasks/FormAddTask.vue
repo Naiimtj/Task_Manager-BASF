@@ -3,11 +3,11 @@
     <form @submit.prevent="submitForm" class="flex flex-col gap-4 w-80">
       <!-- TASK NAME -->
       <div class="grid grid-cols-6 gap-6">
-        <label for="taskName" class="col-span-2">Task Name:</label>
+        <label for="taskTitle" class="col-span-2">Task Name:</label>
         <input
           type="text"
-          id="taskName"
-          v-model="taskName"
+          id="taskTitle"
+          v-model="taskTitle"
           required
           class="col-span-4 bg-gray-400/10 hover:bg-gray-400/50 pl-2 w-full rounded-md"
         />
@@ -23,7 +23,11 @@
       </div>
       <!-- PRIORITY -->
       <label for="taskPriority">Priority:</label>
-      <select for="taskPriority" v-model="taskPriority" class="bg-gray-400/10 hover:bg-gray-400/50 rounded-md cursor-pointer">
+      <select
+        id="taskPriority"
+        v-model="taskPriority"
+        class="bg-gray-400/10 hover:bg-gray-400/50 rounded-md cursor-pointer"
+      >
         <option
           v-for="priority in prioritys"
           :key="priority.code"
@@ -34,7 +38,7 @@
         </option>
       </select>
       <!-- LABELS -->
-      <AddLabels :labels="labels"/>
+      <AddLabels :labels="labels" />
       <!-- SUBMIT -->
       <div class="flex justify-between">
         <button
@@ -59,7 +63,19 @@
 import { createTask } from "../../server/fastApi/api-service";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import AddLabels from "./AddLabels"
+import AddLabels from "./AddLabels";
+
+const props = defineProps({
+  isEdit: {
+    type: Boolean,
+    default: false,
+  },
+  task: {
+    type: Object,
+    default: {},
+  },
+});
+const { isEdit, task } = props;
 
 let prioritys = ref([
   { code: "1", name: "High" },
@@ -70,35 +86,34 @@ let prioritys = ref([
 const router = useRouter();
 const route = useRoute();
 
-const labels = ref<Array>([]);
-const taskName = ref<string>("");
-const taskDescription = ref<string>("");
-const taskPriority = ref<string>("Low");
+const labels = ref<Array>(isEdit ? task.labels :[]);
+const taskTitle = ref<string>(isEdit ? task.title : "");
+const taskDescription = ref<string>(isEdit ? task.description : "");
+const taskPriority = ref<string>(isEdit ? task.priority : "Low");
 
 const closeModal = () => {
   router.push("/");
 };
-const groupId = ref();
-groupId.value = route.params.id;
+const groupId = route.params.groupId;
+const taskId = route.params.taskId;
 
 const error = ref(null);
 
 const submitForm = () => {  
-createTask({
-    title: taskName.value,
+  createTask({
+    title: taskTitle.value,
     description: taskDescription.value,
     priority: taskPriority.value,
     labels: labels.value,
-    group_id: Number(groupId.value),
+    group_id: Number(groupId),
   })
     .then((response) => {
       if (response) {
         // Reset form and close
-        taskName.value = "";
+        taskTitle.value = "";
         taskDescription.value = "";
         taskPriority.value = "Low";
-        labels.value = [],
-        closeModal();
+        (labels.value = []), closeModal();
       }
     })
     .catch((err) => {

@@ -46,7 +46,7 @@
           @click="handleDeleteTaskGroup(group.id)"
         >
           <Delete class="scale-75" />
-          Delete
+          Delete Group
         </button>
       </div>
     </div>
@@ -71,7 +71,7 @@ const navigateToUrl = (groupId: number) => {
 const props = defineProps({
   addNewTaskGroup: {
     type: Boolean,
-    default: [],
+    default: false,
   },
 });
 const deleteOneTaskGroup = ref(false);

@@ -30,6 +30,7 @@
         <div class="flex gap-1">
           <button
             type="button"
+            @click="navigateToUrl(props.Task.group_id, props.Task.id)"
             class="rounded-lg hover:fill-white fill-gray-400 hover:text-white font-semibold"
           >
             <Edit />
@@ -49,6 +50,7 @@
 
 <script lang="ts" setup>
 import { watch } from "vue";
+import { useRouter } from "vue-router";
 import type { ITask } from "~/interfaces/ITask";
 import { editTask, deleteTask } from "~/server/fastApi/api-service";
 import { Delete, Edit } from "../../assets/icons";
@@ -61,6 +63,12 @@ const props = defineProps({
     default: {},
   }
 });
+
+const router = useRouter();
+
+const navigateToUrl = (groupId: number, taskId: number) => {
+  router.push(`/task/${groupId}/${taskId}`);
+};
 
 let PriorityColor = "";
 switch (props.Task.priority) {

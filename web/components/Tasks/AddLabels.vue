@@ -1,6 +1,6 @@
 <template>
   <h2 class="text-lg">Labels:</h2>
-  <!-- Lista de etiquetas -->
+  <!-- List of labels -->
   <div class="flex flex-wrap">
     <div
       v-for="(label, index) in labels"
@@ -17,7 +17,7 @@
       </button>
     </div>
   </div>
-  <!-- Campo para añadir la etiqueta -->
+  <!-- Field to add the label -->
   <div class="mb-4">
     <input
       v-model="newLabel"
@@ -25,6 +25,7 @@
       type="text"
       placeholder="Type a label and press Enter"
       class="border border-gray-300 p-2 rounded w-full text-black"
+      id="labels"
     />
   </div>
 </template>
@@ -34,6 +35,7 @@ import { ref, watch, toRefs } from "vue";
 
 const props = defineProps({
   labels: Array,
+  default: [],
 });
 
 const { labels } = toRefs(props); // Hacemos reactivo el prop
