@@ -213,6 +213,14 @@ async def delete_task_group(id: int, db: db_dependency):
     
     if not task_group_to_delete:
         raise HTTPException(status_code=404, detail="Task Group not found")
+
+    all_task_groups = tasks = db.query(models.Task).filter(models.Task.group_id == id).all()
+
+    for task in all_task_groups:
+        task_to_delete = db.query(models.Task).filter(models.Task.id == task.id).first()
+        if not task_to_delete:
+            raise HTTPException(status_code=404, detail="Task not found")
+        db.delete(task_to_delete)
     
     db.delete(task_group_to_delete)
     db.commit()
