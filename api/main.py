@@ -47,6 +47,7 @@ class TaskGroupSchema(BaseModel):
     name: str
 
 class TaskSchema(BaseModel):
+    id: int | None = None
     title: str | None = None
     description: str | None = None
     completed: bool | None = None
@@ -62,13 +63,20 @@ def home():
 # * SEARCH
 @app.get('/tasks/search', tags=['Tasks'], response_model=List[TaskSchema])
 async def search_tasks( db:db_dependency, title: Optional[str] = Query(None, description="Search by title")):
+
     query = db.query(models.Task)
-    if title:
+    if title == "":
+        return []
+
+    if title == "allTasks":
+        results = query.all()
+    else:
         query = query.filter(models.Task.title.ilike(f'%{title}%'))
+        results = query.all()
     
-    results = query.all()
     if not results:
         raise HTTPException(status_code=404, detail="No tasks found")
+
     return results
 
 # - GET
