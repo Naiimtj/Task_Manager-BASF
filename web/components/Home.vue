@@ -1,6 +1,6 @@
 <template>
   <div class="my-2 flex flex-col items-center">
-    <h1 class="text-5xl underline underline-offset-8 mb-4">Hello World</h1>
+    <h1 class="text-5xl underline underline-offset-8 mb-4">To Do</h1>
     <p>This is my Task List Manager</p>
     <p>You can create your Group Tasks</p>
     <!-- ADD TASK GROUP -->
@@ -12,7 +12,7 @@
       Create Task Group
     </button>
     <div v-else class="relative my-4">
-      <FormAddTaskGroup :toggleNewTaskGroup="toggleNewTaskGroup" />
+      <FormAddTaskGroup />
       <Close
         @click="toggleForm"
         class="absolute top-0 right-0 cursor-pointer stroke-black hover:stroke-red-500 stroke-2"
