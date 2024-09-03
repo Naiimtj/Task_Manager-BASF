@@ -9,7 +9,7 @@ This is a simple Task Manager application designed to help users manage their ta
 - Create, read, update, and delete tasks.
 - Categorize tasks by groups (e.g., To-Do, In Progress, Done).
 - Assign priorities to tasks.
-- Labels/tags for tasks.
+- Add labels/tags to tasks.
 - Search tasks.
 
 ## Technology Stack
@@ -56,3 +56,16 @@ Once the containers are up and running, you can access the application at http:/
 ### 5. Access to Api
 Once the containers are up and running, you can access the api at http://localhost:5000/docs.
 
+### 6. Test the API
+
+To test the API, first, enter the API container:
+
+```bash
+docker exec -it task_manager-basf-api-1 /bin/sh
+```
+
+Then, run the tests:
+
+```bash
+pytest
+```
