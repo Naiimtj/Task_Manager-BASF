@@ -48,21 +48,21 @@ class TaskGroupSchema(BaseModel):
 
 class TaskSchemaCreate(BaseModel):
     title: str = Field(min_length=3, max_length=20)
-    description: str = Field(max_length=20)
+    description: str = Field(max_length=40)
     completed: bool = Field(default=False)
     priority: str = Field(default='Low')
-    labels: list[str]
+    labels: List[str]
     group_id: int = Field(ge=0)
 
 class TaskSchema(BaseModel):
-    id: int | None = None
-    title: str | None = None
-    description: str | None = None
-    completed: bool | None = None
-    priority: str | None = None
-    labels: list[str] | None = None
-    group_id: int | None = None
-
+    id: Optional[int] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    completed: Optional[bool] = None
+    priority: Optional[str] = None
+    labels: Optional[List[str]] = None
+    group_id: Optional[int] = None
+    
 # < ROUTES
 @app.get('/', tags=['Home'])
 def home():
@@ -71,19 +71,18 @@ def home():
 # * SEARCH
 @app.get('/tasks/search', tags=['Tasks'], response_model=List[TaskSchema])
 async def search_tasks( db:db_dependency, title: Optional[str] = Query(None, description="Search by title")):
-
     query = db.query(models.Task)
-    if title == "":
+    if title is None or title == "":
         return []
 
-    if title == "allTasks":
+    if title.lower() == "alltasks":
         results = query.all()
     else:
         query = query.filter(models.Task.title.ilike(f'%{title}%'))
         results = query.all()
     
     if not results:
-        raise HTTPException(status_code=404, detail="No tasks found")
+        raise HTTPException(status_code=404, detail="No title tasks found")
 
     return results
 
@@ -97,6 +96,8 @@ async def get_all_tasks(db:db_dependency):
 @app.get("/tasks/{id}", tags=['Tasks'])
 async def get_detail_task(id: int, db:db_dependency):
     task = db.query(models.Task).filter(models.Task.id == id).all()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
     return task
 
 # TASKS GROUPS
@@ -113,7 +114,9 @@ async def get_all_task_groups(db:db_dependency):
 @app.get("/task-groups/{group_id}", tags=['Task Group'])
 async def get_name_group(group_id: int, db:db_dependency):
     tasks = db.query(models.TaskGroup).filter(models.TaskGroup.id == group_id).all()
-    return tasks
+    if not task_group:
+        raise HTTPException(status_code=404, detail="Task Group not found")
+    return task_group
 
 # . POST
 # TASKS
@@ -149,7 +152,6 @@ async def create_task_group(group:TaskGroupSchema, db:db_dependency):
 # TASKS
 @app.put('/tasks/{id}', tags=['Tasks'])
 async def update_task(id: int, task: TaskSchema, db: db_dependency):
-    # logging.info("START")
     task_to_update = db.query(models.Task).filter(models.Task.id == id).first()
 
     if not task_to_update:
@@ -220,7 +222,7 @@ async def delete_all_tasks(db: db_dependency):
     
     db.commit()
     
-    return {"message": f"All tasks deleted successfully, {len(tasks_to_delete)} rows affected"}
+    return {"message": "All tasks deleted successfully"}
 
 # TASKS GROUPS
 @app.delete('/task-groups/{id}', tags=['Task Group'])
@@ -230,13 +232,9 @@ async def delete_task_group(id: int, db: db_dependency):
     if not task_group_to_delete:
         raise HTTPException(status_code=404, detail="Task Group not found")
 
-    all_task_groups = tasks = db.query(models.Task).filter(models.Task.group_id == id).all()
-
-    for task in all_task_groups:
-        task_to_delete = db.query(models.Task).filter(models.Task.id == task.id).first()
-        if not task_to_delete:
-            raise HTTPException(status_code=404, detail="Task not found")
-        db.delete(task_to_delete)
+    tasks = db.query(models.Task).filter(models.Task.group_id == id).all()
+    for task in tasks:
+        db.delete(task)
     
     db.delete(task_group_to_delete)
     db.commit()
@@ -248,7 +246,7 @@ async def delete_all_task_groups(db: db_dependency):
     task_groups_to_delete = db.query(models.TaskGroup).all()
     if not task_groups_to_delete:
         return {"message": "No tasks groups found to delete"}    
-    for task in task_groups_to_delete:
-        db.delete(task)
+    for task_group in task_groups_to_delete:
+        db.delete(task_group)
     db.commit()    
-    return {"message": f"All tasks groups deleted successfully, {len(task_groups_to_delete)} rows affected"}
+    return {"message": "All tasks groups deleted successfully"}
