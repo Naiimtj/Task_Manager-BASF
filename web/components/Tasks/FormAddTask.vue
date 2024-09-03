@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createTask, editTask } from "../../server/fastApi/api-service";
+import { createTask, editTask } from "../../server/FastApi/api-service";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AddLabels from "./AddLabels";

@@ -12,7 +12,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import FormAddTask from "../../../components/Tasks/FormAddTask";
 import type { ITask } from "~/interfaces/ITask";
-import { getTask } from "../../../server/fastApi/api-service";
+import { getTask } from "../../../server/FastApi/api-service";
 
 const route = useRoute();
 
@@ -22,14 +22,14 @@ const taskId = route.params.taskId;
 const tasks = ref<ITask[]>([]);
 
 if (tasks.value.length === 0) {
-onMounted(async () => {
-  try {
-    const data = (await getTask(taskId)) as unknown as ITask[];
-    tasks.value = data;
-  } catch (error) {
-    console.error("Error fetching task:", error);
-  }
-});
+  onMounted(async () => {
+    try {
+      const data = (await getTask(taskId)) as unknown as ITask[];
+      tasks.value = data;
+    } catch (error) {
+      console.error("Error fetching task:", error);
+    }
+  });
 }
 </script>
 

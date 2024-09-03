@@ -66,7 +66,7 @@ import {
   getAllGroups,
   getTaskOfGroup,
   deleteTaskGroup,
-} from "~/server/fastApi/api-service";
+} from "~/server/FastApi/api-service";
 import { CloseMenu, ArrowDown, ArrowUp, Delete } from "~/assets/icons";
 import SingleTaskBasic from "../Tasks/SingleTaskBasic.vue";
 

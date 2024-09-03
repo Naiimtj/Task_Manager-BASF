@@ -52,16 +52,16 @@
 import { watch } from "vue";
 import { useRouter } from "vue-router";
 import type { ITask } from "~/interfaces/ITask";
-import { editTask, deleteTask } from "~/server/fastApi/api-service";
+import { editTask, deleteTask } from "~/server/FastApi/api-service";
 import { Delete, Edit } from "../../assets/icons";
 
-const emit = defineEmits(['taskDeleted']);
+const emit = defineEmits(["taskDeleted"]);
 
 const props = defineProps({
   Task: {
     type: Object as () => ITask,
     default: {},
-  }
+  },
 });
 
 const router = useRouter();
@@ -111,7 +111,7 @@ const handleEditTask = (newCompletedValue: boolean) => {
 const handleDeleteTask = (newCompletedValue: boolean) => {
   deleteTask(props.Task.id)
     .then(() => {
-      emit('taskDeleted', props.Task.group_id);      
+      emit("taskDeleted", props.Task.group_id);
     })
     .catch((err) => {
       error.value = err.response.data.message;

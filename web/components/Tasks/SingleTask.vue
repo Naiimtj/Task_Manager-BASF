@@ -82,7 +82,7 @@
 import { watch } from "vue";
 import { useRouter } from "vue-router";
 import type { ITask } from "~/interfaces/ITask";
-import { editTask, deleteTask } from "~/server/fastApi/api-service";
+import { editTask, deleteTask } from "~/server/FastApi/api-service";
 import { Delete, Edit } from "../../assets/icons";
 
 const emit = defineEmits(["taskDeleted"]);

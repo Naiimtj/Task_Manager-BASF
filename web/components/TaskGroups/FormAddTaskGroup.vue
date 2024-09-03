@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { createTaskGroup } from "~/server/fastApi/api-service";
+import { createTaskGroup } from "~/server/FastApi/api-service";
 import type { IAddTaskGroup } from "~/interfaces/ITaskGroup";
 
 const props = defineProps({
