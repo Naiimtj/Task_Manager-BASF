@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    ports:
+      - "5438:5432"
+    environment:
+      POSTGRES_USER: soporte
+      POSTGRES_PASSWORD: soporte
+      POSTGRES_DB: task-manager
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      URL_DATABASE: postgresql://soporte:soporte@db:5432/task-manager
+    depends_on:
+      - db
+
+  web:
+    build: ./web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - FASTAPI_URI=${FASTAPI_URI:-"http://localhost:5000"}
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

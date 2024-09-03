@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      fastApiUri: process.env.FASTAPI_URI,
+      fastApiUri: process.env.FASTAPI_URI || 'http://localhost:5000',
     },
   },
 });
