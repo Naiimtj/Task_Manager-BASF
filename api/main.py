@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Annotated, Optional
 import models
 from database import engine, SessionLocal
@@ -44,7 +44,15 @@ app.add_middleware(
 
 # Pydantic models for request bodies
 class TaskGroupSchema(BaseModel):
-    name: str
+    name: str = Field(min_length=3, max_length=20)
+
+class TaskSchemaCreate(BaseModel):
+    title: str = Field(min_length=3, max_length=20)
+    description: str = Field(max_length=20)
+    completed: bool = Field(default=False)
+    priority: str = Field(default='Low')
+    labels: list[str]
+    group_id: int = Field(ge=0)
 
 class TaskSchema(BaseModel):
     id: int | None = None
@@ -110,7 +118,7 @@ async def get_name_group(group_id: int, db:db_dependency):
 # . POST
 # TASKS
 @app.post('/tasks', tags=['Tasks'])
-async def create_task(task:TaskSchema, db:db_dependency):
+async def create_task(task:TaskSchemaCreate, db:db_dependency):
     task_group = db.query(models.TaskGroup).filter(models.TaskGroup.id == task.group_id).first()
     if not task_group:
         raise HTTPException(status_code=400, detail="Task Group not found")

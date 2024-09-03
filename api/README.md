@@ -39,13 +39,13 @@ source .venv/bin/activate
 ## Dependency Installation
 With the virtual environment activated, install the necessary dependencies with pip:
 ```bash
-pip install fastapi uvicorn sqlalchemy asyncpg psycopg2-binary python-dotenv logging
+pip install fastapi uvicorn sqlalchemy asyncpg psycopg2-binary python-dotenv logging httpx pytest
 ```
 ## Project Configuration
 1. **.env File**: (opcional):  If you use environment variables, create a .env file at the root of the project to store configurations such as the database URL. An example .env file could be:
 
 ```bash
-DATABASE_URL=postgresql+psycopg2://user:password@localhost:5432/your_database
+DATABASE_URL=postgresql://user:password@localhost:5432/your_database
 ```
 1. **Data Base**: Ensure your database is set up and accessible. The database.py file should be configured to connect to your PostgreSQL database.
 
@@ -75,4 +75,9 @@ Or an alternative interface (Swagger UI) at:
 
 ```bash
 http://localhost:5000/redoc
+```
+
+## Testing
+```bash
+pytest
 ```
