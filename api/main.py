@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from typing import List, Annotated, Optional
 import models
@@ -33,6 +35,8 @@ db_dependency = Annotated[Session, Depends(get_db)]
 # Config CORS
 origins = [
     "http://localhost:3000",
+    "http://localhost",
+    "http://localhost:8080",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -62,12 +66,20 @@ class TaskSchema(BaseModel):
     priority: Optional[str] = None
     labels: Optional[List[str]] = None
     group_id: Optional[int] = None
-    
-# < ROUTES
-@app.get('/', tags=['Home'])
-def home():
+
+# Mount a folder to serve static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get('/', tags=['Home'], include_in_schema=False)
+async def home():
     return "Hi!! Check '/docs' to see routes."
 
+# FAVICON
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
+# < ROUTES
 # * SEARCH
 @app.get('/tasks/search', tags=['Tasks'], response_model=List[TaskSchema])
 async def search_tasks( db:db_dependency, title: Optional[str] = Query(None, description="Search by title")):
