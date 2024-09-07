@@ -116,7 +116,11 @@ export async function searchTaskTitle(query) {
     return response;
   } catch (error) {
     console.error("Error in Search Tasks:", error);
-    return [];
+    return [
+      {
+        title: "Empty",
+      },
+    ];
   }
 }
 // * PUT

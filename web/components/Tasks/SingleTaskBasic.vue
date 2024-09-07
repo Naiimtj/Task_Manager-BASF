@@ -1,19 +1,21 @@
 <template>
   <div @click.stop>
-    <tr
+    <div
       :class="
         props.Task.completed
           ? 'flex items-center gap-4 hover:bg-gray-700'
           : `flex items-center gap-4 ${PriorityColor}`
       "
     >
-      <td class="flex flex-row items-center justify-between w-full gap-2 px-2">
+      <div class="flex flex-row items-center justify-between w-full gap-2 px-2">
         <div
           class="flex flex-row items-center cursor-pointer w-full"
           @click="toggleCheck"
         >
           <input
             type="checkbox"
+            :id="'CheckComplete-' + props.Task.title + props.Task.id"
+            name="CheckComplete"
             v-model="props.Task.completed"
             class="custom-checkbox h-5 w-5 mr-2"
           />
@@ -43,8 +45,8 @@
             <Delete />
           </button>
         </div>
-      </td>
-    </tr>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -108,10 +110,10 @@ const handleEditTask = (newCompletedValue: boolean) => {
     });
 };
 
-const handleDeleteTask = (newCompletedValue: boolean) => {
+const handleDeleteTask = () => {
   deleteTask(props.Task.id)
     .then(() => {
-      emit("taskDeleted", props.Task.group_id);
+      emit("taskDeleted");
     })
     .catch((err) => {
       error.value = err.response.data.message;

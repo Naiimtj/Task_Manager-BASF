@@ -2,7 +2,7 @@
   <div
     class="h-full min-h-screen flex flex-col relative text-black dark:text-white top-0 bottom-0 w-full bg-gray-50 dark:bg-gray-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,45,117,0.5),rgba(255,255,255,0.9))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(37,45,117,0.5),rgba(255,255,255,0))] px-6 items-center"
   >
-    <head
+    <div
       class="absolute z-50 flex gap-6 mt-5 backdrop-blur-md p-2 rounded-xl text-gray-400"
     >
       <NuxtLink
@@ -12,10 +12,10 @@
         :class="isActive(link.path)"
         >{{ link.name }}</NuxtLink
       >
-    </head>
-    <body class="mt-14 w-full">
+    </div>
+    <div class="mt-14 w-full">
       <slot />
-    </body>
+    </div>
   </div>
 </template>
 
