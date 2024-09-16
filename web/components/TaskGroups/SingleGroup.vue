@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { ref, watchEffect } from "vue";
-import { useCloseAllTaskGroupStore } from "~/stores/useTaskGroupStore";
+import { useCloseAllTaskGroupStore } from "~/store/useTaskGroupStore";
 import { ArrowDown, ArrowUp } from "~/assets/icons";
 import ListTaskOneGroup from "./ListTaskOneGroup.vue";
 

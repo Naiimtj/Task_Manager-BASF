@@ -17,9 +17,7 @@
       :key="group.id"
       class="p-2 rounded-lg border border-gray-400"
     >
-      <SingleGroup
-        :group="group"
-      />
+      <SingleGroup :group="group" />
       <!-- ADD TASK OR DELETE -->
       <div class="flex justify-around">
         <button
@@ -43,7 +41,10 @@
 <script lang="ts" setup>
 import { ref, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { useCloseAllTaskGroupStore, useAddTaskGroupStore } from "~/stores/useTaskGroupStore";
+import {
+  useCloseAllTaskGroupStore,
+  useAddTaskGroupStore,
+} from "~/store/useTaskGroupStore";
 import type { ITaskGroup } from "~/interfaces/ITaskGroup";
 import { deleteTaskGroup, getAllGroups } from "~/server/FastApi/api-service";
 import { CloseMenu, Delete } from "~/assets/icons";

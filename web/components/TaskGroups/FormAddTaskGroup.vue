@@ -45,7 +45,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useAddTaskGroupStore } from "~/stores/useTaskGroupStore";
+import { useAddTaskGroupStore } from "~/store/useTaskGroupStore";
 import { createTaskGroup } from "~/server/FastApi/api-service";
 import type { IAddTaskGroup } from "~/interfaces/ITaskGroup";
 import { Close } from "~/assets/icons";
@@ -70,7 +70,7 @@ const handleAddTaskGroup = () => {
     createTaskGroup({ name: taskGroup.value.name })
       .then((response) => {
         if (response) {
-          addTaskGroupStore.triggerAddTaskGroup()
+          addTaskGroupStore.triggerAddTaskGroup();
           toggleForm();
           taskGroup.value.name = "";
         }
